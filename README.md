@@ -1,13 +1,13 @@
-# Avro Mock Generator
+# PDSC Mock Generator
 
-Create mock messages from Avro schemas.
+Create mock messages from PDSC schemas.
 
 ## Usage
 
 Call the generator with the schema:
 
 ```
-import generateMsg from '@ovotech/avro-mock-generator'
+import generateMsg from '@tcorley/pdsc-mock-generator'
 
 const schema = {
   type: 'record',
@@ -38,9 +38,11 @@ Use the `Seeded` factory to create a version of the generator that will use dete
 
 The factory will return a function with the same signature as the default generator.
 
-## Supported Avro features
+## Supported PDSC features
 
-Based on the Avro 1.9.0 [specification](https://avro.apache.org/docs/current/spec.html).
+This package was forked from [@ovotech/avro-mock-generagtor](https://github.com/ovotech/avro-mock-generator) to support [**PDSC Syntax**](https://linkedin.github.io/rest.li/pdsc_syntax)
+
+The original package was based on the Avro 1.9.0 [specification](https://avro.apache.org/docs/current/spec.html).
 
 - All primitive types
 - All logical types
@@ -50,6 +52,8 @@ Based on the Avro 1.9.0 [specification](https://avro.apache.org/docs/current/spe
 - Type Alias
 
 **Partial support for namespaces**. Only union types are namespaced, unconditionally.
+
+This package also includes support for **Unions with Aliases**
 
 ## Contributing
 

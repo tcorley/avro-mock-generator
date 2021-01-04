@@ -1,7 +1,7 @@
 import { schema as avsc } from 'avsc';
 import isuuid from 'isuuid';
 
-import avroMock, { Seeded } from '../src/index';
+import pdscMock, { Seeded } from '../src/index';
 
 const schemaForAllTypes: avsc.RecordType = {
   type: 'record',
@@ -47,9 +47,9 @@ const schemaForAllTypes: avsc.RecordType = {
   ],
 };
 
-describe('Avro mock data generator', () => {
-  it('supports all easily tested avro types', () => {
-    const result = avroMock(schemaForAllTypes);
+describe('PDSC mock data generator', () => {
+  it('supports all easily tested pegasus types', () => {
+    const result = pdscMock(schemaForAllTypes);
 
     expect(result).toMatchObject({ int: expect.any(Number) });
     expect(result).toMatchObject({ float: expect.any(Number) });
@@ -91,7 +91,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('can parse a basic schema', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       fields: [{ name: 'nbChickens', type: 'int' }],
     } as avsc.AvroSchema);
@@ -99,7 +99,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('can parse a record field', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       fields: [
         {
@@ -115,7 +115,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('supports simple union types', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       fields: [
         {
@@ -130,7 +130,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('supports union types with records', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       fields: [
         {
@@ -151,7 +151,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('supports union types with a namespace', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       namespace: 'com.farm',
       fields: [
@@ -178,7 +178,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('supports union types with a namespace under an array', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       namespace: 'com.farms',
       fields: [
@@ -221,7 +221,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('support arrays with union types', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       name: 'Farm',
       fields: [
@@ -256,7 +256,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('should not qualify names if there is only one record in a sea of non-record union members', () => {
-    const result = avroMock(
+    const result = pdscMock(
       {
         type: 'record',
         namespace: 'com.farms',
@@ -294,7 +294,7 @@ describe('Avro mock data generator', () => {
       fields: [{ name: 'nbChickens', type: 'int' }],
     };
 
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       fields: [
         {
@@ -321,7 +321,7 @@ describe('Avro mock data generator', () => {
       fields: [{ name: 'nbChickens', type: 'int' }],
     };
 
-    const result = avroMock(
+    const result = pdscMock(
       {
         type: 'record',
         fields: [
@@ -351,7 +351,7 @@ describe('Avro mock data generator', () => {
       fields: [{ name: 'nbChickens', type: 'int' }],
     };
 
-    const result = avroMock(
+    const result = pdscMock(
       {
         type: 'record',
         namespace: 'my.lovely',
@@ -370,7 +370,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('supports top level union types', () => {
-    const result = avroMock([
+    const result = pdscMock([
       {
         type: 'record',
         name: 'Owners',
@@ -399,8 +399,22 @@ describe('Avro mock data generator', () => {
     });
   });
 
+  it('supports union with alias', () => {
+    const result = pdscMock([
+      {
+        alias: 'Foo',
+        type: {
+          type: 'record',
+          name: 'CityFarm',
+          fields: [{ name: 'nbPidgeons', type: 'int' }],
+        },
+      },
+    ] as any);
+    expect(result).toEqual({ Foo: { nbPidgeons: expect.any(Number) } });
+  });
+
   it('supports enum types', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       fields: [
         {
@@ -419,7 +433,7 @@ describe('Avro mock data generator', () => {
     const symbols = Array(1000).fill('Cow');
     symbols[0] = 'Chicken';
 
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       fields: [
         {
@@ -439,11 +453,11 @@ describe('Avro mock data generator', () => {
       fields: [{ name: 'nbChickens', type: '3rd Kind' }],
     };
 
-    expect(() => avroMock(schema as avsc.AvroSchema)).toThrow('Unknown type');
+    expect(() => pdscMock(schema as avsc.AvroSchema)).toThrow('Unknown type');
   });
 
   it('allows custom generators', () => {
-    const result = avroMock(
+    const result = pdscMock(
       {
         type: 'record',
         fields: [{ name: 'chickenName', type: 'string' }],
@@ -454,7 +468,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('supports type alias', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       fields: [
         {
@@ -478,7 +492,7 @@ describe('Avro mock data generator', () => {
   });
 
   it('supports fully qualified type alias', () => {
-    const result = avroMock({
+    const result = pdscMock({
       type: 'record',
       fields: [
         {

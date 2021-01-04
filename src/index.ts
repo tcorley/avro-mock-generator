@@ -128,6 +128,15 @@ function generateUnionType(types: Array<any>, context) {
         context.pickUnion.includes(type.name),
     ) || namespaced[0];
 
+  if (typeof chosenType.type === 'object' && chosenType.type.alias) {
+    return {
+      [chosenType.type.alias]: generateDataForType(
+        chosenType.type.type,
+        context,
+      ),
+    };
+  }
+
   if (
     typeof chosenType.type === 'object' &&
     !Array.isArray(chosenType.type) &&
